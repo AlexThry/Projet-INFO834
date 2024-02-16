@@ -1,5 +1,4 @@
 const Message = require('../models/message.model');
-const jwt = require('jsonwebtoken');
 
 exports.getMessages = (req, res) => {
     Message.find()
@@ -9,7 +8,7 @@ exports.getMessages = (req, res) => {
 
 exports.getMessagesSortedOffsetValues = (req, res) => {
     Message.find()
-        .sort({timestamp: 1})
+        .sort({timestamp: -1})
         .skip(req.params.offset)
         .limit(req.params.values)
         .then(messages => res.status(200).json(messages))
