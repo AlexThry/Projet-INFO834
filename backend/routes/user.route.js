@@ -3,7 +3,6 @@ const userCtrl = require('../controllers/user.controller');
 
 const router = express.Router();
 
-
 // Routes GET
 router.get("/", userCtrl.getUsers);
 
