@@ -1,4 +1,6 @@
 const express = require("express");
+const { exec } = require('child_process');
+
 
 const mongoose = require("mongoose");
 
@@ -15,7 +17,7 @@ const url =
 mongoose
     .connect(url)
     .then(() => console.log("connection_successfull"))
-    .catch(() => console.log("connection_failed"));
+    .catch(error => console.log(error))
 
 app.use(express.json());
 
