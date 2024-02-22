@@ -8,6 +8,6 @@ router.get("/", userCtrl.getUsers);
 
 // Routes POST
 router.post("/add", userCtrl.addUser);
-router.post("/check", userCtrl.checkUserCredential);
+router.post("/login", userCtrl.login);
 
 module.exports = router;
