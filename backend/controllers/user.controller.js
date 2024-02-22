@@ -8,6 +8,12 @@ exports.getUsers = (req, res) => {
         .catch(error => res.status(401).json({error}))
 }
 
+exports.getUserById = (req, res) => {
+    const user_id = new mongoose.Types.ObjectId(req.params.user_id);
+    User.findOne({id: user_id})
+        .then(user => res.status(201).json(user))
+        .catch(error => res.status(401).json({error}));
+}
 
 exports.login = (req, res) => {
     User.findOne({email: req.body.email})
