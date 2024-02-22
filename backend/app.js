@@ -1,6 +1,9 @@
 const express = require("express");
-const { exec } = require('child_process');
+const redis = require('redis');
 
+const client = redis.createClient();
+
+client.on('error', err => console.log('Redis Client Error', err));
 
 const mongoose = require("mongoose");
 
