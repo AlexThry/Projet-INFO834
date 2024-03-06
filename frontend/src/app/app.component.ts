@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import { LoginComponent } from "./login/login.component";
-
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,4 +15,6 @@ import { LoginComponent } from "./login/login.component";
 })
 
 export class AppComponent {
+    constructor(private router: Router) {
+    }
 }
