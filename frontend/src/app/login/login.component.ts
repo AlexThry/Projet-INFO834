@@ -27,5 +27,31 @@ export class LoginComponent {
 
     ) {}
 
+    onSubmit(f: NgForm) {
+
+        this.errorLogin = undefined;
+        this.submit = true;
+        this.isLoading = true;
+
+
+        if (f.value.email != "" && f.value.email != undefined && f.value.password != "" && f.value.password != undefined) {
+            this.authService.login(f.value.email, f.value.password)
+                .subscribe
+                (user => {
+                    if (user) {
+                        this.userConnected = user;
+                        console.log(user);
+                        this.router.navigateByUrl("/chat");
+                    }
+                    },
+                    error => {
+                        console.error('Erreur lors de la connexion :', error.error.message);
+                        this.errorLogin = error.error;
+                    })
+
+        } else {
+            console.log("prout")
+        }
+    }
 }
 

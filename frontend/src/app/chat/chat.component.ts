@@ -6,6 +6,7 @@ import { MessageService } from "../services/message.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import {CommonModule, DatePipe, Location, NgClass, NgStyle} from "@angular/common";
 import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: "app-conversation",
@@ -26,7 +27,18 @@ export class ChatComponent {
     private route: ActivatedRoute,
     private location: Location,
     private elementRef: ElementRef,
+    private authService: AuthService
   ) {}
+
+    ngOnInit() {
+      let userId = sessionStorage.getItem("user_id");
+        // @ts-ignore
+        this.authService.getUserLoggedIn$().subscribe(
+            user => {
+                console.log(user as User);
+            }
+        )
+    }
 
   // ngOnInit() {
   //   this.authService.getUserLoggedIn$().subscribe((user) => {

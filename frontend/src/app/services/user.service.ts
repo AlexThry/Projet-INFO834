@@ -2,14 +2,17 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, throwError } from 'rxjs';
 import { User } from '../models/user.model';
+import {log} from "node:util";
+import {AuthService} from "./auth.service";
 
 @Injectable({
     providedIn: "root",
 })
 export class UserService {
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient) {}
     getUserById(id: string) {
-        let url = `http://localhost:3000/api/user/${id}`;
+        let url = `http://localhost:3000/api/user/id=${id}`;
 
         return this.http
             .get<any>(url)
@@ -49,6 +52,7 @@ export class UserService {
 
     login(email: string, password: string) {
         const url = `http://localhost:3000/api/user/login`
+        console.log(email, password)
 
         return this.http.post<any>(url, { email, password })
             .pipe(

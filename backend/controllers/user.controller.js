@@ -2,6 +2,7 @@ const User = require('../models/user.model');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 exports.getUsers = (req, res) => {
     User.find()
@@ -11,41 +12,64 @@ exports.getUsers = (req, res) => {
 
 exports.getUserById = (req, res) => {
     const user_id = new mongoose.Types.ObjectId(req.params.user_id);
-    User.findOne({id: user_id})
+    User.findOne({_id: user_id})
         .then(user => res.status(201).json(user))
         .catch(error => res.status(401).json({error}));
 }
 
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
+
     User.findOne({email: req.body.email})
         .then(user => {
-            if (user) {
-                bcrypt.compare(req.body.password, user.password)
-                    .then(valid => {
-                        if (valid) {
-                            User.updateOne({email: req.body.email}, {$inc: {nb_connection: 1}})
-                                .then(() => {
-                                    res.status(201).json({
-                                        userId: user._id,
-                                        token: jwt.sign(
-                                            { userId: user._id},
-                                            'RANDOM_TOCKEN_SECRET',
-                                            { expiresIn: "24h" }
-                                        )
-                                    });
-                                })
-                                .catch(error => res.status(401).json({error}))
-                        } else {
-                            res.status(201).json(false);
-                        }
-                    })
-                    .catch(error => req.status(401).json({error}));
-            } else {
-                res.status(201).json(false);
+            if(!user) {
+                return res.status(401).json({type: "email", message: "Error during connection"});
             }
+
+
+            bcrypt.compare(req.body.password, user.password)
+                .then(valid => {
+                    if (!valid) {
+                        return res.status(401).json({type: "password", message: "Error during connection"});
+                    }
+
+                    res.status(200).json( user );
+                })
+                .catch(error => res.status(500).json({ prout: "prout" }));
         })
-        .catch(error => res.status(401).json({error}));
-}
+        .catch(error => res.status(500).json({ err: "lala" }));
+
+};
+
+// exports.login = (req, res) => {
+//     User.findOne({email: req.body.email})
+//         .then(user => {
+//             if (user) {
+//                 bcrypt.compare(req.body.password, user.password)
+//                     .then(valid => {
+//                         if (valid) {
+//                             User.updateOne({email: req.body.email}, {$inc: {nb_connection: 1}})
+//                                 .then(() => {
+//                                     res.status(201).json({
+//                                         user: user,
+//                                         token: jwt.sign(
+//                                             { userId: user._id},
+//                                             'RANDOM_TOCKEN_SECRET',
+//                                             { expiresIn: "24h" }
+//                                         )
+//                                     });
+//                                 })
+//                                 .catch(error => res.status(401).json({error}))
+//                         } else {
+//                             res.status(201).json(false);
+//                         }
+//                     })
+//                     .catch(error => req.status(401).json({error}));
+//             } else {
+//                 res.status(201).json(false);
+//             }
+//         })
+//         .catch(error => res.status(401).json({error}));
+// }
 
 exports.addUser = (req, res) => {
     bcrypt.hash(req.body.password, 10)

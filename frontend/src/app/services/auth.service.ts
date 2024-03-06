@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import {catchError, map, Observable, Subject, throwError} from 'rxjs';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
 
@@ -25,18 +25,18 @@ export class AuthService {
                         user.password,
                     );
 
-                    localStorage.removeItem("user_id");
-                    localStorage.setItem("user_id", user._id);
+                    sessionStorage.removeItem("user_id");
+                    sessionStorage.setItem("user_id", user._id);
                     this.userLoggedIn$.next(userConnected);
 
                     return userConnected;
-                })
+                }),
             );
     }
 
 
     getUserLoggedIn$(): Observable<User | undefined> {
-        let user_id = localStorage.getItem("user_id");
+        let user_id = sessionStorage.getItem("user_id");
 
         if (user_id !== null) {
             // Retourne l'observable directement du service UserService
@@ -54,18 +54,18 @@ export class AuthService {
         return this.userService.signup(formData)
             .pipe(
                 map(data => {
-                    localStorage.removeItem("user_id");
-                    localStorage.setItem("user_id", data.user_id);
+                    sessionStorage.removeItem("user_id");
+                    sessionStorage.setItem("user_id", data.user_id);
                     return data;
                 })
             );
     }
 
     logout() {
-        localStorage.removeItem("user_id");
+        sessionStorage.removeItem("user_id");
     }
 
     isUserConnected() {
-        return localStorage.getItem("user_id") !== null;
+        return sessionStorage.getItem("user_id") !== null;
     }
 }
