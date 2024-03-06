@@ -9,6 +9,24 @@ import { User } from '../models/user.model';
 export class UserService {
   constructor(private http: HttpClient) {}
 
+  getUserById(id: string) {
+    let url = `http://localhost:3000/api/user/${id}`;
+
+    return this.http
+      .get<any>(url)
+      .pipe(
+        map(
+          (data: any) =>
+            new User(
+              data._id,
+              data.username,
+              data.email,
+              data.password
+            ),
+        ),
+      );
+  }
+
   signup(formData: any) {
     const url = `http://localhost:3000/api/user/add`
 

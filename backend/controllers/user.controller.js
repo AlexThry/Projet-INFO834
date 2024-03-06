@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const {Types} = require("mongoose");
 
 exports.getUsers = (req, res) => {
     User.find()
@@ -9,8 +10,8 @@ exports.getUsers = (req, res) => {
 }
 
 exports.getUserById = (req, res) => {
-    const user_id = new mongoose.Types.ObjectId(req.params.user_id);
-    User.findOne({id: user_id})
+    const user_id = new Types.ObjectId(req.params.user_id);
+    User.findOne({_id: user_id})
         .then(user => res.status(201).json(user))
         .catch(error => res.status(401).json({error}));
 }
