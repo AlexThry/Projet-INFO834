@@ -27,8 +27,8 @@ export class MessageService {
   }
 
   getMessagesFromUsersIdsFromLimit(
-    senderId: string,
-    receiverId: string,
+    senderId: number,
+    receiverId: number,
     start: number,
     limit: number,
     ) {
@@ -57,4 +57,30 @@ export class MessageService {
       }),
     );
   }
+    getConversationList(user_id: string) {
+        const url = "http://localhost:3000/api/message/user-messages";
+        return this.http.post<any[]>(url, { user_id: user_id }).pipe(
+            switchMap((messages) => {
+                const messageObservables: Observable<Message>[] = messages.map(
+                    (message) => {
+                        return this.userService
+                            .getUserById(message.sender_id)
+                            .pipe(
+                                map(
+                                    (user) =>
+                                        new Message(
+                                            message._id,
+                                            message.content,
+                                            message.sender_id,
+                                            message.receiver_id,
+                                            message.timestamp,
+                                        ),
+                                ),
+                            );
+                    },
+                );
+                return forkJoin(messageObservables);
+            }),
+        );
+    }
 }

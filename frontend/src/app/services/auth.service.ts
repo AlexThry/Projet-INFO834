@@ -35,7 +35,7 @@ export class AuthService {
     }
 
 
-    getUserLoggedIn$(): Observable<User | undefined> {
+    getUserLoggedIn(): Observable<User | undefined> {
         let user_id = sessionStorage.getItem("user_id");
 
         if (user_id !== null) {

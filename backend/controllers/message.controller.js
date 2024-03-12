@@ -46,3 +46,31 @@ exports.addMessage = (req, res) => {
         .then(() => res.status(201).json({message: "message_added"}))
         .catch(error => res.status(401).json({error}));
 }
+
+// GET CONV FROM USER ID
+
+exports.getConversations = (req, res, next) => {
+    const user_id = new mongoose.Types.ObjectId(req.body.user_id);
+    Message.aggregate([
+        {
+            $match: {
+                $or: [{ sender_id: user_id }, { receiver_id: user_id }],
+            },
+        },
+        {
+            $sort: { timestamp: -1 },
+        },
+        {
+            $group: {
+                _id: "$conversation_id",
+                message: { $first: "$$ROOT" },
+            },
+        },
+        {
+            $replaceRoot: { newRoot: "$message" },
+        },
+    ])
+        .sort({ timestamp: -1 })
+        .then((latestMessages) => res.status(200).json(latestMessages))
+        .catch((error) => res.status(400).json(error));
+};

@@ -9,17 +9,25 @@ import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import {AuthService} from "../services/auth.service";
 
 @Component({
-  selector: "app-conversation",
+  selector: "app-chat",
   standalone: true,
   imports: [CommonModule,DatePipe, NgStyle, FormsModule, ReactiveFormsModule, NgClass],
   templateUrl: "./chat.component.html",
   styleUrl: "./chat.component.scss",
 })
 export class ChatComponent {
-  messageList!: Message[];
-  connectedUser!: User;
-  correspondent!: User;
-  loaded: number = 10;
+    messageList: Message[] = [
+        { id: 1, content: 'Hello', sender_id: 1, receiver_id: 2, timestamp: new Date() },
+        { id: 2, content: 'Hi there!', sender_id: 2, receiver_id: 1, timestamp: new Date() }
+    ];
+    connectedUser: User = { id: 1, username: 'John', email: 'John.test@gmail.com', password: 'password'};
+    correspondent: User = { id: 2, username: 'Alice', email: 'Alice.test@gmail.com', password: 'password'};
+    loaded: number = 10;
+
+    // messageList!: Message[];
+    // connectedUser!: User;
+    // correspondent!: User;
+
 
   constructor(
     private userService: UserService,
@@ -31,17 +39,18 @@ export class ChatComponent {
   ) {}
 
     ngOnInit() {
-      let userId = sessionStorage.getItem("user_id");
-        // @ts-ignore
-        this.authService.getUserLoggedIn$().subscribe(
-            user => {
-                console.log(user as User);
-            }
-        )
+      // let userId = sessionStorage.getItem("user_id");
+      //   // @ts-ignore
+      //   this.authService.getUserLoggedIn().subscribe(
+      //       user => {
+      //           console.log(user as User);
+      //       }
+      //   )
+        console.log(this.correspondent)
     }
 
   // ngOnInit() {
-  //   this.authService.getUserLoggedIn$().subscribe((user) => {
+  //   this.authService.getUserLoggedIn().subscribe((user) => {
   //     this.connectedUser = user as User;
   //     this.userService
   //       .getUserById(this.route.snapshot.params["id"])
@@ -60,7 +69,7 @@ export class ChatComponent {
   //           });
   //       });
   //   });
-  //
+
   //   setTimeout(() => {
   //     const textareas: NodeListOf<HTMLTextAreaElement> =
   //       this.elementRef.nativeElement.querySelectorAll("textarea");
@@ -79,11 +88,11 @@ export class ChatComponent {
   //     });
   //   }, 10);
   // }
-  //
-  // goBack() {
-  //   this.location.back();
-  // }
-  //
+
+  goBack() {
+    this.location.back();
+  }
+
   // onSubmitMessage(f: NgForm) {
   //   if (f.value.message != "" && f.value.message != undefined) {
   //     this.messageService
@@ -107,7 +116,7 @@ export class ChatComponent {
   //   }
   //   f.controls["message"].reset();
   // }
-  // isFirstMessag(message: Message) {
-  //   return message == this.messageList[0];
-  // }
+  isFirstMessage(message: Message) {
+    return message == this.messageList[0];
+  }
 }

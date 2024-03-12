@@ -1,0 +1,8 @@
+.container {
+    display: flex;
+    height: 100%; /* ou une hauteur fixe selon vos besoins */
+}
+
+.app-conversations, .app-chat {
+    flex: 1; /* Pour que les composants prennent tout l'espace disponible */
+}
