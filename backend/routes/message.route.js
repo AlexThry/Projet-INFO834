@@ -7,9 +7,10 @@ const router = express.Router();
 router.get("/", messageCtrl.getMessages);
 router.get("/offset=:offset&values=:values", messageCtrl.getMessagesSortedOffsetValues)
 router.get("/user1=:user1&user2=:user2/offset=:offset&values=:values", messageCtrl.getMessagesSortedByUserIdsOffsetValues)
-router.post("/user-messages", messageCtrl.getConversations);
+router.get("/delete/all", messageCtrl.deleteAllMessages);
 
 // POST
 router.post("/add", messageCtrl.addMessage);
+router.post("/user-messages", messageCtrl.getConversations);
 
 module.exports = router;

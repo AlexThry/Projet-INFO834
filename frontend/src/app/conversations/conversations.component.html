@@ -1,41 +1,54 @@
-<div class="mx-auto shadow rounded-xl">
-    <div class="w-full sticky top-28 shadow-sm flex h-12 bg-gray-100 rounded-l-xl justify-center items-center">
-        <button (click)="goBack()" class=" absolute left-2 rounded-lg hover:bg-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-8 h-8 stroke-gray-400">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-        </button>
-        <p class="font-bold text-xl">Discussions</p>
+<div class="h-full w-full">
+    <div class="navbar justify-center h-20 bg-base-100">
+        <a (click)="logout()" class="btn">Logout</a>
+        <a class="btn btn-ghost text-xl">Bienvenue {{loggedUser.username}}</a>
     </div>
-</div>
-<div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        @for (message of messageList; track message) {
-            <li class="">
-                @if (message.sender_id == currentUser.id) {
-                    <a routerLink="/message/user/{{message.receiver_id}}" class="flex py-5 items-center rtl:space-x-reverse hover:bg-gray-300" [ngClass]="{'rounded-b-xl': isLast(message)}">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                {{correspondence[message.receiver_id].username}}
-                            </p>
-                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                            </p>
+
+    <ul>
+        @for (conv of conversationsUsers; track conv) {
+            <li>
+                <a routerLink="/chat/{{conv.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
+                    <div class="avatar">
+                        <div class="w-12 h-12 rounded-xl">
+                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
                         </div>
-                        <p class="text-gray-500 inline-block mr-4 text-right">{{ message.content }}</p>
-                    </a>
-                } @else {
-                    <a routerLink="/message/user/{{message.sender_id}}" class="flex py-5 items-center rtl:space-x-reverse hover:bg-gray-300" [ngClass]="{'rounded-b-xl': isLast(message)}">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                {{correspondence[message.sender_id].username}}
-                            </p>
-                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                            </p>
-                        </div>
-                        <p class="text-gray-500 inline-block mr-4 text-right">{{ message.content }}</p>
-                    </a>
-                }
+                    </div>
+                    <p>{{ conv.username }}</p>
+                </a>
             </li>
         }
+        <div class="divider">All users</div>
+        <ul>
+            @for (user of allUsers; track user) {
+                <li>
+                    <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
+                        <div class="avatar">
+                            <div class="w-12 h-12 rounded-xl">
+                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                            </div>
+                        </div>
+                        <p>{{ user.username }}</p>
+                    </a>
+                </li>
+            }
+        </ul>
+        <div class="divider">Connected users</div>
+        <ul>
+            @for (user of connectedUsers; track user) {
+                <li>
+                    <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
+                        <div class="avatar">
+                            <div class="w-12 h-12 rounded-xl">
+                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                            </div>
+                        </div>
+                        <p>{{ user.username }}</p>
+                    </a>
+                </li>
+            }
+        </ul>
+
+
     </ul>
 </div>
+

@@ -8,6 +8,6 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
 export const routes: Routes = [
     { path: 'signup', component: InscriptionComponent },
     { path: '', component: LoginComponent },
+    { path: 'chat/:id', component: DashboardComponent },
     { path: 'chat', component: DashboardComponent },
-    { path: 'conv', component: ConversationsComponent },
 ];

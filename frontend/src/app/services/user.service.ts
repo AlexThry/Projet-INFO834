@@ -52,7 +52,6 @@ export class UserService {
 
     login(email: string, password: string) {
         const url = `http://localhost:3000/api/user/login`
-        console.log(email, password)
 
         return this.http.post<any>(url, { email, password })
             .pipe(
@@ -70,5 +69,42 @@ export class UserService {
                 })
             );
 
+    }
+
+    logout() {
+        const url = `http://localhost:3000/api/user/logout/id=${localStorage.getItem('user_id')}`
+        console.log(url)
+        return this.http.get<any>(url).subscribe(
+            data => {
+                console.log(data)
+            },
+            error => {
+                console.error('Erreur lors de la déconnexion :', error);
+            })
+    }
+
+    getAllUsers() {
+        const url = `http://localhost:3000/api/user`;
+
+        return this.http.get<any>(url)
+            .pipe(
+                map((data: any) => data.map((user: any) =>
+                    new User(
+                        user._id,
+                        user.username,
+                        user.email,
+                        user.password,
+                    )
+                )),
+                catchError((error: HttpErrorResponse) => {
+                    console.error('Error fetching users:', error);
+                    return throwError(error);
+                })
+            );
+    }
+
+    getConnectedUsers() {
+        const url = `http://localhost:3000/api/user/connected_users`;
+        return this.http.get<any>(url);
     }
 }

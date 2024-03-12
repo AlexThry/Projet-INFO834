@@ -10,8 +10,11 @@ import { UserService } from './user.service';
 export class AuthService {
     private userLoggedIn$ = new Subject<User>();
 
-    constructor(private http: HttpClient,
-                protected userService: UserService) { };
+
+    constructor(
+        private http: HttpClient,
+        protected userService: UserService
+    ) {};
 
 
     login(email: string, password: string): Observable<User> {
@@ -25,8 +28,8 @@ export class AuthService {
                         user.password,
                     );
 
-                    sessionStorage.removeItem("user_id");
-                    sessionStorage.setItem("user_id", user._id);
+                    localStorage.removeItem("user_id");
+                    localStorage.setItem("user_id", user._id);
                     this.userLoggedIn$.next(userConnected);
 
                     return userConnected;
@@ -36,17 +39,21 @@ export class AuthService {
 
 
     getUserLoggedIn(): Observable<User | undefined> {
-        let user_id = sessionStorage.getItem("user_id");
+        try {
 
-        if (user_id !== null) {
-            // Retourne l'observable directement du service UserService
-            return this.userService.getUserById(user_id);
-        } else {
-            // Retourne une chaîne (ou une valeur par défaut) si l'user_id n'est pas disponible
-            return new Observable((observer) => {
-                observer.next(undefined);
-                observer.complete();
-            });
+            let user_id = localStorage.getItem("user_id");
+            if (user_id !== null) {
+                // Retourne l'observable directement du service UserService
+                return this.userService.getUserById(user_id);
+            } else {
+                // Retourne une chaîne (ou une valeur par défaut) si l'user_id n'est pas disponible
+                return new Observable((observer) => {
+                    observer.next(undefined);
+                    observer.complete();
+                });
+            }
+        } catch (e){
+            return this.userService.getUserById("65d7074dddb4b24c2dab31f3")
         }
     }
 
@@ -54,18 +61,18 @@ export class AuthService {
         return this.userService.signup(formData)
             .pipe(
                 map(data => {
-                    sessionStorage.removeItem("user_id");
-                    sessionStorage.setItem("user_id", data.user_id);
+                    localStorage.removeItem("user_id");
+                    localStorage.setItem("user_id", data.user_id);
                     return data;
                 })
             );
     }
 
     logout() {
-        sessionStorage.removeItem("user_id");
+        localStorage.removeItem("user_id");
     }
 
     isUserConnected() {
-        return sessionStorage.getItem("user_id") !== null;
+        return localStorage.getItem("user_id") !== null;
     }
 }

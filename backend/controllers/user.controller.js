@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const {initializeRedisClient, addUserToConnectedUsers, getConnectedUsers, removeUserFromConnectedUsers} = require("../middleware/redis");
 
 exports.getUsers = (req, res) => {
     User.find()
@@ -15,6 +16,24 @@ exports.getUserById = (req, res) => {
     User.findOne({_id: user_id})
         .then(user => res.status(201).json(user))
         .catch(error => res.status(401).json({error}));
+}
+
+exports.logout = (req, res) => {
+    initializeRedisClient().then(() => {
+        removeUserFromConnectedUsers(req.params.user_id);
+        console.log("user_disconnected")
+    })
+        .then(() => res.status(200).json({message: "user_disconnected"}))
+        .catch(error => res.status(401).json({error}));
+}
+
+exports.getConnectedUsers = (req, res) => {
+    initializeRedisClient().then(() => {
+        console.log("connected_users")
+        getConnectedUsers()
+            .then(users => res.status(200).json(users))
+            .catch(error => res.status(401).json({error}));
+    })
 }
 
 exports.login = (req, res, next) => {
@@ -33,43 +52,15 @@ exports.login = (req, res, next) => {
                     }
 
                     res.status(200).json( user );
+                    initializeRedisClient().then(() => {
+                        addUserToConnectedUsers(user._id);
+                    })
                 })
                 .catch(error => res.status(500).json({ prout: "prout" }));
         })
         .catch(error => res.status(500).json({ err: "lala" }));
 
 };
-
-// exports.login = (req, res) => {
-//     User.findOne({email: req.body.email})
-//         .then(user => {
-//             if (user) {
-//                 bcrypt.compare(req.body.password, user.password)
-//                     .then(valid => {
-//                         if (valid) {
-//                             User.updateOne({email: req.body.email}, {$inc: {nb_connection: 1}})
-//                                 .then(() => {
-//                                     res.status(201).json({
-//                                         user: user,
-//                                         token: jwt.sign(
-//                                             { userId: user._id},
-//                                             'RANDOM_TOCKEN_SECRET',
-//                                             { expiresIn: "24h" }
-//                                         )
-//                                     });
-//                                 })
-//                                 .catch(error => res.status(401).json({error}))
-//                         } else {
-//                             res.status(201).json(false);
-//                         }
-//                     })
-//                     .catch(error => req.status(401).json({error}));
-//             } else {
-//                 res.status(201).json(false);
-//             }
-//         })
-//         .catch(error => res.status(401).json({error}));
-// }
 
 exports.addUser = (req, res) => {
     bcrypt.hash(req.body.password, 10)

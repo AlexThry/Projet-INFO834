@@ -1,12 +1,14 @@
-import { Component, ElementRef, Input } from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef, Input} from "@angular/core";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
 import { MessageService } from "../services/message.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {CommonModule, DatePipe, Location, NgClass, NgStyle} from "@angular/common";
 import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import {AuthService} from "../services/auth.service";
+import {filter} from "rxjs";
+
 
 @Component({
   selector: "app-chat",
@@ -16,107 +18,89 @@ import {AuthService} from "../services/auth.service";
   styleUrl: "./chat.component.scss",
 })
 export class ChatComponent {
-    messageList: Message[] = [
-        { id: 1, content: 'Hello', sender_id: 1, receiver_id: 2, timestamp: new Date() },
-        { id: 2, content: 'Hi there!', sender_id: 2, receiver_id: 1, timestamp: new Date() }
-    ];
-    connectedUser: User = { id: 1, username: 'John', email: 'John.test@gmail.com', password: 'password'};
-    correspondent: User = { id: 2, username: 'Alice', email: 'Alice.test@gmail.com', password: 'password'};
-    loaded: number = 10;
-
-    // messageList!: Message[];
-    // connectedUser!: User;
-    // correspondent!: User;
+    messages !: Message[];
+    correspondantId !: string;
+    loggedUserId !: string;
+    loaded : number = 10;
+    correspondant !: User;
 
 
-  constructor(
-    private userService: UserService,
-    private messageService: MessageService,
-    private route: ActivatedRoute,
-    private location: Location,
-    private elementRef: ElementRef,
-    private authService: AuthService
-  ) {}
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router,
+        protected messageService: MessageService,
+        protected authService: AuthService,
+        protected userService: UserService,
+        private cdr: ChangeDetectorRef,
+        private elementRef: ElementRef,
 
-    ngOnInit() {
-      // let userId = sessionStorage.getItem("user_id");
-      //   // @ts-ignore
-      //   this.authService.getUserLoggedIn().subscribe(
-      //       user => {
-      //           console.log(user as User);
-      //       }
-      //   )
-        console.log(this.correspondent)
+    ) {
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe(() => {
+            // Rechargez le composant ici
+            this.loadData();
+        });
     }
 
-  // ngOnInit() {
-  //   this.authService.getUserLoggedIn().subscribe((user) => {
-  //     this.connectedUser = user as User;
-  //     this.userService
-  //       .getUserById(this.route.snapshot.params["id"])
-  //       .subscribe((user) => {
-  //         this.correspondent = user as User;
-  //         this.messageService
-  //           .getMessagesFromUsersIdsFromLimit(
-  //             this.connectedUser.id,
-  //             this.correspondent.id,
-  //             0,
-  //             this.loaded,
-  //           )
-  //           .subscribe((messages) => {
-  //             this.messageList = messages;
-  //             console.log(this.messageList);
-  //           });
-  //       });
-  //   });
 
-  //   setTimeout(() => {
-  //     const textareas: NodeListOf<HTMLTextAreaElement> =
-  //       this.elementRef.nativeElement.querySelectorAll("textarea");
-  //     textareas.forEach((textarea: HTMLTextAreaElement) => {
-  //       textarea.setAttribute(
-  //         "style",
-  //         "height:" + textarea.scrollHeight + "px;overflow-y:hidden;",
-  //       );
-  //     });
-  //
-  //     textareas.forEach((textarea: HTMLTextAreaElement) => {
-  //       textarea.addEventListener("input", function () {
-  //         this.style.height = "auto";
-  //         this.style.height = this.scrollHeight + "px";
-  //       });
-  //     });
-  //   }, 10);
-  // }
 
-  goBack() {
-    this.location.back();
-  }
+    ngOnInit() {
+        this.loadData();
+        setTimeout(() => {
+            const textareas: NodeListOf<HTMLTextAreaElement> =
+                this.elementRef.nativeElement.querySelectorAll("textarea");
+            textareas.forEach((textarea: HTMLTextAreaElement) => {
+                textarea.setAttribute(
+                    "style",
+                    "height:" + textarea.scrollHeight + "px;overflow-y:hidden;",
+                );
+            });
 
-  // onSubmitMessage(f: NgForm) {
-  //   if (f.value.message != "" && f.value.message != undefined) {
-  //     this.messageService
-  //       .createMessage(
-  //         this.connectedUser.id.toString(),
-  //         this.correspondent.id.toString(),
-  //         f.value.message,
-  //       )
-  //       .subscribe(() => {
-  //         this.messageService
-  //           .getMessagesFromUsersIdsFromLimit(
-  //             this.connectedUser.id,
-  //             this.correspondent.id,
-  //             0,
-  //             10,
-  //           )
-  //           .subscribe((messages) => {
-  //             this.messageList = messages;
-  //           });
-  //       });
-  //   }
-  //   f.controls["message"].reset();
-  // }
-  isFirstMessage(message: Message) {
-    return message == this.messageList[0];
-  }
+            textareas.forEach((textarea: HTMLTextAreaElement) => {
+                textarea.addEventListener("input", function () {
+                    this.style.height = "auto";
+                    this.style.height = this.scrollHeight + "px";
+                });
+            });
+        }, 10);
+    }
+
+    loadData() {
+        this.messages = []
+        this.correspondantId = this.route.snapshot.params["id"]
+        this.userService.getUserById(this.correspondantId).subscribe(user => {
+            this.correspondant = user;
+        })
+
+        { // @ts-ignore
+            this.loggedUserId = localStorage.getItem("user_id")
+        }
+
+        this.messageService.getMessagesFromUsersIdsFromLimit(this.correspondantId, this.loggedUserId, 0, this.loaded).subscribe(messages => {
+            this.messages = messages.reverse();
+        })
+        this.cdr.detectChanges();
+    }
+
+    onSubmitMessage(f: NgForm) {
+        console.log(f.value.message)
+        if (f.value.message != "" && f.value.message != undefined) {
+            this.messageService
+                .createMessage(
+                    this.loggedUserId,
+                    this.correspondantId,
+                    f.value.message,
+                )
+                .subscribe(() => {
+                    const newMessage = new Message(0, f.value.message, this.loggedUserId, this.correspondantId, new Date())
+                    this.messages.push(newMessage)
+                    f.controls["message"].reset();
+                });
+        }
+    }
+
+    chatIsLoaded() {
+        return this.correspondant != undefined;
+    }
 }

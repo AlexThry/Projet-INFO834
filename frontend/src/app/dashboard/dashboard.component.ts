@@ -37,4 +37,6 @@ export class DashboardComponent {
     stopDrag() {
         this.isDragging = false;
     }
+
+
 }

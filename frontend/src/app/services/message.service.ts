@@ -27,8 +27,8 @@ export class MessageService {
   }
 
   getMessagesFromUsersIdsFromLimit(
-    senderId: number,
-    receiverId: number,
+    senderId: string,
+    receiverId: string,
     start: number,
     limit: number,
     ) {
@@ -83,4 +83,16 @@ export class MessageService {
             }),
         );
     }
+
+    sendMessage(senderId: string, receiverId: string, content: string) {
+      const url = "http://localhost:3000/api/message/add/";
+
+        return this.http.post(url, {
+            "sender_id": senderId,
+            "receiver_id": receiverId,
+            "content": content,
+        });
+
+    }
+
 }

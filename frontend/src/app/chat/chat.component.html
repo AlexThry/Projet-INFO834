@@ -1,6 +1,28 @@
-<div class="mx-auto shadow rounded-xl">
-    <div class="w-full sticky top-28 shadow-sm flex h-12 bg-gray-100 rounded-r-xl justify-center items-center">
-        <p class="font-bold text-xl">{{ correspondent }}</p>
+@defer (when chatIsLoaded()) {
+    <div class="h-screen w-full overflow-y-scroll relative">
+        <div class=" sticky top-0 bg-white navbar justify-center h-20 z-10 shadow">
+            <a class="btn btn-ghost text-xl">{{ correspondant.username }}</a>
+        </div>
+        <div class="mx-5 mt-5 flex flex-col mb-20">
+            @for (message of messages; track message) {
+                @if (message.sender_id == loggedUserId) {
+                    <div class="chat chat-end">
+                        <div class="chat-bubble bg-fuchsia-600 text-white">{{ message.content }}</div>
+                    </div>
+                }
+                @else {
+                    <div class="chat chat-start">
+                        <div class="chat-bubble bg-fuchsia-800 text-white">{{ message.content }}</div>
+                    </div>
+                }
+            }
+        </div>
+        <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class="absolute flex bottom-2 align-middle bg-white w-full">
+            <input ngModel type="text" name="message" id="message" class="mx-2 input w-full input-bordered" required>
+            <button type="submit" class="btn mr-2">envoyer</button>
+        </form>
     </div>
-</div>
+} @placeholder {
+    wait
+}
 
