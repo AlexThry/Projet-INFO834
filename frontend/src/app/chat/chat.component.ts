@@ -8,6 +8,7 @@ import {CommonModule, DatePipe, Location, NgClass, NgStyle} from "@angular/commo
 import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import {AuthService} from "../services/auth.service";
 import {filter} from "rxjs";
+import { io } from "socket.io-client";
 
 
 @Component({
@@ -21,7 +22,7 @@ export class ChatComponent {
     messages !: Message[];
     correspondantId !: string;
     loggedUserId !: string;
-    loaded : number = 10;
+    loaded : number = 100;
     correspondant !: User;
 
 
@@ -33,7 +34,6 @@ export class ChatComponent {
         protected userService: UserService,
         private cdr: ChangeDetectorRef,
         private elementRef: ElementRef,
-
     ) {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
@@ -47,23 +47,6 @@ export class ChatComponent {
 
     ngOnInit() {
         this.loadData();
-        setTimeout(() => {
-            const textareas: NodeListOf<HTMLTextAreaElement> =
-                this.elementRef.nativeElement.querySelectorAll("textarea");
-            textareas.forEach((textarea: HTMLTextAreaElement) => {
-                textarea.setAttribute(
-                    "style",
-                    "height:" + textarea.scrollHeight + "px;overflow-y:hidden;",
-                );
-            });
-
-            textareas.forEach((textarea: HTMLTextAreaElement) => {
-                textarea.addEventListener("input", function () {
-                    this.style.height = "auto";
-                    this.style.height = this.scrollHeight + "px";
-                });
-            });
-        }, 10);
     }
 
     loadData() {
