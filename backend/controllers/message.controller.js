@@ -35,6 +35,11 @@ exports.getMessagesSortedByUserIdsOffsetValues = (req, res, next) => {
 };
 
 exports.addMessage = (req, res) => {
+    Message.collection.dropIndex('content_1', function(err, result) {
+        if (err) {
+            console.log('Error in dropping index!', err);
+        }
+    });
 
     const sender_id = new mongoose.Types.ObjectId(req.body.sender_id);
     const receiver_id = new mongoose.Types.ObjectId(req.body.receiver_id);
@@ -52,6 +57,7 @@ exports.addMessage = (req, res) => {
 
 // GET CONV FROM USER ID
 
+// TODO: refaire ici
 exports.getConversations = (req, res, next) => {
     const user_id = new mongoose.Types.ObjectId(req.body.user_id);
     Message.aggregate([
