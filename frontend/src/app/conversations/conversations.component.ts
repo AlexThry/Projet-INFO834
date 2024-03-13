@@ -7,19 +7,21 @@ import {Router, RouterLink} from "@angular/router";
 import { UserService } from "../services/user.service";
 import { Location, NgClass, NgStyle } from "@angular/common";
 import {forkJoin} from "rxjs";
+import {AlertComponent} from "../alert/alert.component";
 
 @Component({
     selector: "app-conversations",
     standalone: true,
-    imports: [RouterLink, NgStyle, NgClass],
+    imports: [RouterLink, NgStyle, NgClass, AlertComponent],
     templateUrl: "./conversations.component.html",
     styleUrl: "./conversations.component.scss",
 })
 export class ConversationsComponent {
     conversationsUsers !: User[];
     allUsers !: User[];
-    connectedUsers !: User[];
+    connectedUsers : User[] = [];
     loggedUser !: User;
+    dataLoaded: boolean = false;
 
 
 
@@ -38,7 +40,6 @@ export class ConversationsComponent {
                 this.messageService.getConversationList(loggedUser.id).subscribe(conversations => {
                     const userObservables = [];
                     for (let message of conversations) {
-                        console.log(message)
                         if (message.sender_id == this.loggedUser.id) {
                             userObservables.push(this.userService.getUserById(message.receiver_id));
                         } else {
@@ -49,6 +50,7 @@ export class ConversationsComponent {
                         this.conversationsUsers = users;
                     });
                 })
+                this.dataLoaded = true;
             } else {
                 console.log("pas d'utilisateur connecté")
             }
@@ -57,6 +59,8 @@ export class ConversationsComponent {
         this.userService.getConnectedUsers().subscribe(usersIds => {
             let userObservables = [];
             for (let userId of usersIds) {
+            console.log("conversation component")
+                console.log(userId)
                 userObservables.push(this.userService.getUserById(userId));
             }
             forkJoin(userObservables).subscribe(users => {
@@ -77,6 +81,6 @@ export class ConversationsComponent {
     }
 
     conversationsLoaded() {
-        return (this.conversationsUsers != undefined && this.connectedUsers != undefined)
+        return this.dataLoaded;
     }
 }
