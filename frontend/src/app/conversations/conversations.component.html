@@ -24,6 +24,7 @@
         <div class="divider">Connected users</div>
         <ul>
             @for (user of connectedUsers; track user) {
+                @if (user.id !== loggedUser.id){
                 <li>
                     <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box relative">
                         <div class="avatar">
@@ -35,11 +36,13 @@
                         <p>{{ user.username }}</p>
                     </a>
                 </li>
+                }
             }
         </ul>
         <div class="divider">All users</div>
         <ul>
             @for (user of allUsers; track user) {
+                @if (user.id !== loggedUser.id){
                 <li>
                     <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
                         <div class="avatar">
@@ -50,6 +53,7 @@
                         <p>{{ user.username }}</p>
                     </a>
                 </li>
+                }
             }
         </ul>
 
