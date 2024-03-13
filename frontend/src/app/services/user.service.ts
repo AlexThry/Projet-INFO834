@@ -11,6 +11,7 @@ import {AuthService} from "./auth.service";
 export class UserService {
     constructor(
         private http: HttpClient) {}
+
     getUserById(id: string) {
         let url = `http://localhost:3000/api/user/id=${id}`;
 
@@ -58,7 +59,6 @@ export class UserService {
 
     logout() {
         const url = `http://localhost:3000/api/user/logout/id=${localStorage.getItem('user_id')}`
-        console.log(url)
         return this.http.get<any>(url).subscribe(
             data => {
                 console.log(data)
@@ -90,6 +90,7 @@ export class UserService {
 
     getConnectedUsers() {
         const url = `http://localhost:3000/api/user/connected_users`;
+        console.log("connected users")
         return this.http.get<any>(url);
     }
 }

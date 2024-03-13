@@ -9,6 +9,7 @@ import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import {AuthService} from "../services/auth.service";
 import {filter} from "rxjs";
 import { io } from "socket.io-client";
+import {data} from "autoprefixer";
 
 
 @Component({
@@ -19,11 +20,12 @@ import { io } from "socket.io-client";
   styleUrl: "./chat.component.scss",
 })
 export class ChatComponent {
-    messages !: Message[];
+    messages : Message[] = [];
     correspondantId !: string;
     loggedUserId !: string;
     loaded : number = 100;
-    correspondant !: User;
+    correspondant !: User ;
+    dataLoaded : boolean = false;
 
 
     constructor(
@@ -45,24 +47,24 @@ export class ChatComponent {
 
 
 
+
     ngOnInit() {
         this.loadData();
+        console.log(this.dataLoaded)
     }
 
     loadData() {
         this.messages = []
-        this.correspondantId = this.route.snapshot.params["id"]
+        this.correspondantId = this.route.snapshot.params["id"];
+        this.loggedUserId = localStorage.getItem("user_id")!;
         this.userService.getUserById(this.correspondantId).subscribe(user => {
             this.correspondant = user;
+            this.messageService.getMessagesFromUsersIdsFromLimit(this.correspondantId, this.loggedUserId, 0, this.loaded).subscribe(messages => {
+                this.messages = messages.reverse();
+            })
+            this.dataLoaded = true;
         })
 
-        { // @ts-ignore
-            this.loggedUserId = localStorage.getItem("user_id")
-        }
-
-        this.messageService.getMessagesFromUsersIdsFromLimit(this.correspondantId, this.loggedUserId, 0, this.loaded).subscribe(messages => {
-            this.messages = messages.reverse();
-        })
         this.cdr.detectChanges();
     }
 
@@ -83,7 +85,7 @@ export class ChatComponent {
     }
 
     chatIsLoaded() {
-        return this.correspondant != undefined && this.messages != undefined;
+        return this.dataLoaded
     }
 
     protected readonly Date = Date;
