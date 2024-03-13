@@ -1,7 +1,7 @@
 @defer (when chatIsLoaded()) {
     <div class="h-screen w-full overflow-y-scroll relative">
         <div class=" sticky top-0 bg-white navbar justify-center h-20 z-10 shadow">
-            <a class="btn btn-ghost text-xl">{{ correspondant.username }}</a>
+            <a class="font-bold text-xl">{{ correspondant.username }}</a>
         </div>
         <div class="mx-5 mt-5 flex flex-col mb-20">
             @for (message of messages; track message) {
@@ -19,7 +19,7 @@
         </div>
         <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class="absolute flex bottom-2 align-middle bg-white w-full">
             <input ngModel type="text" name="message" id="message" class="mx-2 input w-full input-bordered" required>
-            <button type="submit" class="btn mr-2">envoyer</button>
+            <button type="submit" class="btn mr-2 bg-fuchsia-600 text-white hover:bg-fuchsia-900">envoyer</button>
         </form>
     </div>
 } @placeholder {

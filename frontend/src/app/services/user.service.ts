@@ -29,25 +29,10 @@ export class UserService {
             );
     }
 
-    signup(formData: any) {
-        const url = `http://localhost:3000/api/user/signup`
+    signup(email: string, password: string, username: string) {
+        const url = `http://localhost:3000/api/user/add`
 
-        return this.http.post<any>(url, formData)
-            .pipe(
-                catchError((error: HttpErrorResponse) => {
-                    if (error.status === 400) {
-                        // Cas où l'authentification a échoué
-                        console.error('Register échouée :', error);
-                    } else {
-                        // Autres erreurs HTTP
-                        console.error('Erreur lors du register :', error);
-                    }
-
-                    // Propager l'erreur pour permettre à d'autres parties de l'application de la gérer si nécessaire
-                    return throwError(error);
-                })
-            )
-
+        return this.http.post<any>(url, { email, password, username })
     }
 
     login(email: string, password: string) {

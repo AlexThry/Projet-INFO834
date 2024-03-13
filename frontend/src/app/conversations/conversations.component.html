@@ -1,7 +1,7 @@
 <div class="h-full w-full">
     <div class="navbar justify-center h-20 bg-base-100">
         <a (click)="logout()" class="btn">Logout</a>
-        <a class="btn btn-ghost text-xl">Bienvenue {{loggedUser.username}}</a>
+        <a class="rounded-box ml-4 text-xl">Bienvenue {{loggedUser.username}}</a>
     </div>
 
     <ul>
@@ -17,38 +17,39 @@
                 </a>
             </li>
         }
-        <div class="divider">All users</div>
-        <ul>
-            @for (user of allUsers; track user) {
-                <li>
-                    <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
-                        <div class="avatar">
-                            <div class="w-12 h-12 rounded-xl">
-                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                            </div>
-                        </div>
-                        <p>{{ user.username }}</p>
-                    </a>
-                </li>
-            }
-        </ul>
-        <div class="divider">Connected users</div>
-        <ul>
-            @for (user of connectedUsers; track user) {
-                <li>
-                    <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
-                        <div class="avatar">
-                            <div class="w-12 h-12 rounded-xl">
-                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                            </div>
-                        </div>
-                        <p>{{ user.username }}</p>
-                    </a>
-                </li>
-            }
-        </ul>
-
-
     </ul>
+    <div class="divider">Connected users</div>
+    <ul>
+        @for (user of connectedUsers; track user) {
+            <li>
+                <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box relative">
+                    <div class="avatar">
+                        <div class="w-12 h-12 rounded-xl">
+                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                        </div>
+                    </div>
+                    <div class="absolute h-3 w-3 bg-green-300 rounded-full z-10 left-12 top-12"></div>
+                    <p>{{ user.username }}</p>
+                </a>
+            </li>
+        }
+    </ul>
+    <div class="divider">All users</div>
+    <ul>
+        @for (user of allUsers; track user) {
+            <li>
+                <a routerLink="/chat/{{user.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
+                    <div class="avatar">
+                        <div class="w-12 h-12 rounded-xl">
+                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                        </div>
+                    </div>
+                    <p>{{ user.username }}</p>
+                </a>
+            </li>
+        }
+    </ul>
+
+
 </div>
 
