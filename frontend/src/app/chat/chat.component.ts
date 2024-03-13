@@ -84,7 +84,6 @@ export class ChatComponent {
     }
 
     onSubmitMessage(f: NgForm) {
-        console.log(f.value.message)
         if (f.value.message != "" && f.value.message != undefined) {
             this.messageService
                 .createMessage(
@@ -101,6 +100,6 @@ export class ChatComponent {
     }
 
     chatIsLoaded() {
-        return this.correspondant != undefined;
+        return this.correspondant != undefined && this.messages != undefined;
     }
 }

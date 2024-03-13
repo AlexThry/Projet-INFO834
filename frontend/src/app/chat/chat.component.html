@@ -17,7 +17,7 @@
                 }
             }
         </div>
-        <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class="absolute flex bottom-2 align-middle bg-white w-full">
+        <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class="fixed flex bottom-2 align-middle bg-white w-full">
             <input ngModel type="text" name="message" id="message" class="mx-2 input w-full input-bordered" required>
             <button type="submit" class="btn mr-2 bg-fuchsia-600 text-white hover:bg-fuchsia-900">envoyer</button>
         </form>
