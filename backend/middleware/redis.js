@@ -4,21 +4,44 @@ const hash = require("object-hash");
 const redisConnectedUsersKey = "connected_users";
 let redisClient = undefined;
 
-async function initializeRedisClient() {
-    let redisURL =  process.env.REDIS_URI || 'redis://localhost:6379';
-    if (redisURL) {
-        redisClient = createClient({ url: redisURL }).on("error", (e) => {
-            console.error(`Failed to create the Redis client with error:`);
-            console.error(e);
-        });
+// async function initializeRedisClient() {
+//     let redisURL =  process.env.REDIS_URI || 'redis://localhost:6379';
+//     if (redisURL) {
+//         redisClient = createClient({ url: redisURL }).on("error", (e) => {
+//             console.error(`Failed to create the Redis client with error:`);
+//             console.error(e);
+//         });
+//
+//         try {
+//             await redisClient.connect();
+//             console.log(`connection_successfull_redis`);
+//         } catch (e) {
+//             console.error(`Connection to Redis failed with error:`);
+//             console.error(e);
+//         }
+//     }
+// }
 
-        try {
-            await redisClient.connect();
-            console.log(`connection_successfull_redis`);
-        } catch (e) {
-            console.error(`Connection to Redis failed with error:`);
-            console.error(e);
+async function initializeRedisClient() {
+    const redisConfig = {
+        password: 'HwPhFge8HhRJhgC4IHZZp4TZw791YhND',
+        socket: {
+            host: 'redis-10574.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+            port: 10574
         }
+    };
+
+    redisClient = createClient(redisConfig).on("error", (e) => {
+        console.error(`Failed to create the Redis client with error:`);
+        console.error(e);
+    });
+
+    try {
+        await redisClient.connect();
+        console.log(`connection_successfull_redis`);
+    } catch (e) {
+        console.error(`Connection to Redis failed with error:`);
+        console.error(e);
     }
 }
 

@@ -57,8 +57,7 @@ exports.addMessage = (req, res) => {
 
 // GET CONV FROM USER ID
 
-// TODO: refaire ici
-exports.getConversations = (req, res, next) => {
+exports.getConversations = (req, res) => {
     const user_id = new mongoose.Types.ObjectId(req.body.user_id);
     Message.aggregate([
         {
@@ -71,16 +70,18 @@ exports.getConversations = (req, res, next) => {
         },
         {
             $group: {
-                _id: "$conversation_id",
-                message: { $first: "$$ROOT" },
+                _id: {
+                    $cond: [
+                        { $gt: ["$sender_id", "$receiver_id"] },
+                        { sender_id: "$sender_id", receiver_id: "$receiver_id" },
+                        { sender_id: "$receiver_id", receiver_id: "$sender_id" }
+                    ]
+                },
+                message: { $first: "$$ROOT" }
             },
         },
-        {
-            $replaceRoot: { newRoot: "$message" },
-        },
     ])
-        .sort({ timestamp: -1 })
-        .then((latestMessages) => res.status(200).json(latestMessages))
+        .then((latestMessages) => res.status(200).json(latestMessages.map(item => item.message)))
         .catch((error) => res.status(400).json(error));
 };
 
