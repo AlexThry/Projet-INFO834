@@ -6,13 +6,15 @@
         <div class="mx-5 flex flex-col overflow-y-scroll mb-16">
             @for (message of messages; track message) {
                 @if (message.sender_id == loggedUserId) {
-                    <div class="chat chat-end">
-                        <div class="chat-bubble bg-fuchsia-600 text-white">{{ message.content }}</div>
+                    <div class="group chat chat-end flex flex-col">
+                        <div class="chat-bubble bg-fuchsia-600 text-white before:hidden">{{ message.content }}</div>
+                        <div class="hidden group-hover:block"> {{message.timestamp | date : "shortTime" }} </div>
                     </div>
                 }
                 @else {
-                    <div class="chat chat-start">
-                        <div class="chat-bubble bg-fuchsia-800 text-white">{{ message.content }}</div>
+                    <div class="group chat chat-start flex flex-col">
+                        <div class="chat-bubble bg-fuchsia-800 text-white before:hidden">{{ message.content }}</div>
+                        <div class="hidden group-hover:block"> {{message.timestamp | date : "shortTime" }} </div>
                     </div>
                 }
             }

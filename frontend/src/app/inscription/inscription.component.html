@@ -33,6 +33,9 @@
               <div class="form-control mt-6">
                 <button class="btn btn-outline hover:bg-fuchsia-950">Sign up</button>
               </div>
+                <div *ngIf="(f.value.password === '' || f.value.email === '' || f.value.pseudo === '') && submit" class ="my-2">
+                    <app-alert type="warning" message="Warning: A field is missing"></app-alert>
+                </div>
             </form>
           </div>
         </div>

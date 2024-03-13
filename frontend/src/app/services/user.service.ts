@@ -39,20 +39,20 @@ export class UserService {
         const url = `http://localhost:3000/api/user/login`
 
         return this.http.post<any>(url, { email, password })
-            .pipe(
-                catchError((error: HttpErrorResponse) => {
-                    if (error.status === 401) {
-                        // Gérer le cas où l'authentification a échoué
-                        console.error('Authentification échouée :', error);
-                    } else {
-                        // Gérer d'autres erreurs HTTP
-                        console.error('Erreur lors de la connexion :', error);
-                    }
-
-                    // Propager l'erreur pour permettre à d'autres parties de l'application de la gérer si nécessaire
-                    return throwError(error);
-                })
-            );
+            // .pipe(
+            //     catchError((error: HttpErrorResponse) => {
+            //         if (error.status === 401) {
+            //             // Gérer le cas où l'authentification a échoué
+            //             console.error('Authentification échouée :', error);
+            //         } else {
+            //             // Gérer d'autres erreurs HTTP
+            //             console.error('Erreur lors de la connexion :', error);
+            //         }
+            //
+            //         // Propager l'erreur pour permettre à d'autres parties de l'application de la gérer si nécessaire
+            //         return throwError(error);
+            //     })
+            // );
 
     }
 

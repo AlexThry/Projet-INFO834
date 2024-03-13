@@ -21,14 +21,22 @@
                   <span class="label-text">Password</span>
                 </label>
                 <input name="password" ngModel type="password" placeholder="password" class="input input-bordered text-black" required />
+
                 <label class="label">
-                  <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
                   <a routerLink="signup" class="label-text-alt link link-hover">Create an account</a>
                 </label>
               </div>
-              <div class="form-control mt-6">
-                <button class="btn btn-outline hover:bg-fuchsia-950">Login</button>
-              </div>
+                <div>
+                  <div class="form-control mt-6">
+                    <button class="btn btn-outline hover:bg-fuchsia-950">Login</button>
+                  </div>
+                    <div *ngIf="errorLoginExist() " class ="my-2">
+                        <app-alert type="error" message = "Error: User doesn't exist"></app-alert>
+                    </div>
+                    <div *ngIf="(f.value.password === '' || f.value.email === '') && submit" class ="my-2">
+                        <app-alert type="warning" message="Warning: Missing email or password!"></app-alert>
+                    </div>
+                </div>
             </form>
           </div>
         </div>

@@ -4,6 +4,8 @@ import {User} from "../models/user.model";
 import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth.service";
 import {HttpClient} from "@angular/common/http";
+import {AlertComponent} from "../alert/alert.component";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'app-login',
@@ -11,6 +13,8 @@ import {HttpClient} from "@angular/common/http";
     imports: [
         FormsModule,
         RouterLink,
+        AlertComponent,
+        CommonModule
     ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
@@ -46,13 +50,26 @@ export class LoginComponent {
                     }
                     },
                     error => {
-                        console.error('Erreur lors de la connexion :', error.error.message);
+                        // console.error('Erreur lors de la connexion :', error.error.message);
                         this.errorLogin = error.error;
-                    })
+                    }
+                    )
 
-        } else {
-            console.log("prout")
         }
     }
+
+    errorLoginExist() {
+        return this.errorLogin !== undefined;
+    }
+
+    errorIsEmail() {
+        return this.errorLogin.type === 'email';
+    }
+
+    errorIsPassword() {
+        return this.errorLogin.type === 'password';
+    }
+
+    protected readonly Error = Error;
 }
 
