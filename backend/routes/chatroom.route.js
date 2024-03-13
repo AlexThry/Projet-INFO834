@@ -8,6 +8,7 @@ const router = express.Router()
 
 // POST
 
+router.post("/new", chatroomCtrl.newChatRoom)
 router.post("/id=:id", chatroomCtrl.getChatByUsers)
 
 
