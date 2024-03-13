@@ -56,7 +56,7 @@ exports.addMessage = (req, res) => {
 }
 
 exports.getMessagesFromChatroomId = (req, res) => {
-    const chatroomId = new mongoose.Schema.Types.ObjectId(req.body.chatroom_id);
+    const chatroomId = new mongoose.Types.ObjectId(req.body.chatroom_id);
 
     Message.find({chatroom_id: chatroomId})
         .sort({timestamp: -1})
@@ -67,33 +67,33 @@ exports.getMessagesFromChatroomId = (req, res) => {
 }
 // GET CONV FROM USER ID
 
-// exports.getConversations = (req, res) => {
-//     const user_id = new mongoose.Types.ObjectId(req.body.user_id);
-//     Message.aggregate([
-//         {
-//             $match: {
-//                 $or: [{ sender_id: user_id }, { receiver_id: user_id }],
-//             },
-//         },
-//         {
-//             $sort: { timestamp: -1 },
-//         },
-//         {
-//             $group: {
-//                 _id: {
-//                     $cond: [
-//                         { $gt: ["$sender_id", "$receiver_id"] },
-//                         { sender_id: "$sender_id", receiver_id: "$receiver_id" },
-//                         { sender_id: "$receiver_id", receiver_id: "$sender_id" }
-//                     ]
-//                 },
-//                 message: { $first: "$$ROOT" }
-//             },
-//         },
-//     ])
-//         .then((latestMessages) => res.status(200).json(latestMessages.map(item => item.message)))
-//         .catch((error) => res.status(400).json(error));
-// };
+exports.getConversations = (req, res) => {
+    const user_id = new mongoose.Types.ObjectId(req.body.user_id);
+    Message.aggregate([
+        {
+            $match: {
+                $or: [{ sender_id: user_id }, { receiver_id: user_id }],
+            },
+        },
+        {
+            $sort: { timestamp: -1 },
+        },
+        {
+            $group: {
+                _id: {
+                    $cond: [
+                        { $gt: ["$sender_id", "$receiver_id"] },
+                        { sender_id: "$sender_id", receiver_id: "$receiver_id" },
+                        { sender_id: "$receiver_id", receiver_id: "$sender_id" }
+                    ]
+                },
+                message: { $first: "$$ROOT" }
+            },
+        },
+    ])
+        .then((latestMessages) => res.status(200).json(latestMessages.map(item => item.message)))
+        .catch((error) => res.status(400).json(error));
+};
 
 exports.deleteAllMessages = (req, res) => {
     Message.deleteMany()
