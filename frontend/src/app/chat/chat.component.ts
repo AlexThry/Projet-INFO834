@@ -85,4 +85,7 @@ export class ChatComponent {
     chatIsLoaded() {
         return this.correspondant != undefined && this.messages != undefined;
     }
+
+    protected readonly Date = Date;
+    protected readonly DatePipe = DatePipe;
 }
