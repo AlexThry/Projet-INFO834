@@ -12,5 +12,6 @@ router.get("/delete/all", messageCtrl.deleteAllMessages);
 // POST
 router.post("/add", messageCtrl.addMessage);
 router.post("/user-messages", messageCtrl.getConversations);
+router.post("/chatroom", messageCtrl.getMessagesFromChatroomId)
 
 module.exports = router;
