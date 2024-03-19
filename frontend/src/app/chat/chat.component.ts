@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, Input} from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output} from "@angular/core";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
@@ -8,8 +8,9 @@ import {CommonModule, DatePipe, Location, NgClass, NgStyle} from "@angular/commo
 import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import {AuthService} from "../services/auth.service";
 import {filter} from "rxjs";
-import { io } from "socket.io-client";
-import {data} from "autoprefixer";
+import {Chatroom} from "../models/chatroom.model";
+import {ChatroomService} from "../services/chatroom.service";
+import {io} from 'socket.io-client'
 
 
 @Component({
@@ -20,12 +21,20 @@ import {data} from "autoprefixer";
   styleUrl: "./chat.component.scss",
 })
 export class ChatComponent {
-    messages : Message[] = [];
+    socket =  io('http://localhost:3000');
+
     correspondantId !: string;
+
+    chatroom!: Chatroom;
+    chatroomLoaded: boolean = false;
+
+    messages : Message[] = [];
+    messagesLoaded : boolean = false;
+
+
     loggedUserId !: string;
     loaded : number = 100;
     correspondant !: User ;
-    dataLoaded : boolean = false;
 
 
     constructor(
@@ -34,57 +43,98 @@ export class ChatComponent {
         protected messageService: MessageService,
         protected authService: AuthService,
         protected userService: UserService,
+        protected chatroomService: ChatroomService,
         private cdr: ChangeDetectorRef,
-        private elementRef: ElementRef,
+
     ) {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe(() => {
-            // Rechargez le composant ici
-            this.loadData();
+            this.loadChatroom();
+            this.loadMessages();
         });
     }
 
-
-
-
     ngOnInit() {
-        this.loadData();
-        console.log(this.dataLoaded)
+        this.socket.on('message', data => {
+            this.messages.push(
+                new Message(
+                    '0',
+                    data.content,
+                    data.senderId,
+                    data.receiverId,
+                    data.chatroomId,
+                    new Date()
+                )
+            )
+        })
     }
 
-    loadData() {
+    loadChatroom() {
+        this.socket.emit('leave_room')
+        this.chatroomLoaded = false;
+        if (this.route.snapshot.params["id"]) {
+            this.correspondantId = this.route.snapshot.params["id"];
+            this.chatroomService.createChatroom(localStorage.getItem("user_id")!, this.correspondantId).subscribe(
+                chatroom => {
+                    this.chatroom = chatroom;
+                    this.socket.emit('join_room', this.chatroom.id)
+                    this.loadMessages();
+                    this.chatroomLoaded = true;
+                }
+            )
+        }
+
+        this.cdr.detectChanges();
+    }
+
+    loadMessages() {
+        this.messagesLoaded = false;
         this.messages = []
-        this.correspondantId = this.route.snapshot.params["id"];
         this.loggedUserId = localStorage.getItem("user_id")!;
-        this.userService.getUserById(this.correspondantId).subscribe(user => {
-            this.correspondant = user;
-            this.messageService.getMessagesFromUsersIdsFromLimit(this.correspondantId, this.loggedUserId, 0, this.loaded).subscribe(messages => {
-                this.messages = messages.reverse();
+        if (this.correspondantId) {
+            this.userService.getUserById(this.correspondantId).subscribe(user => {
+                this.correspondant = user;
+                this.messageService.getMessagesFromChatroom(this.chatroom.id).subscribe(messages => {
+                    this.messages = messages.reverse();
+                    this.messagesLoaded = true;
+                })
             })
-            this.dataLoaded = true;
-        })
+        }
 
         this.cdr.detectChanges();
     }
 
     onSubmitMessage(f: NgForm) {
+
         if (f.value.message != "" && f.value.message != undefined) {
-            this.messageService
-                .createMessage(
-                    this.loggedUserId,
-                    this.correspondantId,
-                    f.value.message,
-                )
-                .subscribe(() => {
-                    const newMessage = new Message(0, f.value.message, this.loggedUserId, this.correspondantId, new Date())
-                    this.messages.push(newMessage)
-                    f.controls["message"].reset();
-                });
+            this.socket.emit('message', {
+                content: f.value.message,
+                senderId: this.loggedUserId,
+                receiverId: this.correspondantId,
+                chatroomId: this.chatroom.id
+            })
+            f.controls["message"].reset();
         }
+
+
+        // if (f.value.message != "" && f.value.message != undefined) {
+        //     this.messageService
+        //         .createMessage(
+        //             this.loggedUserId,
+        //             this.correspondantId,
+        //             this.chatroom.id,
+        //             f.value.message,
+        //         )
+        //         .subscribe(() => {
+        //             const newMessage = new Message('0', f.value.message, this.loggedUserId, this.correspondantId, this.chatroom.id, new Date())
+        //             this.messages.push(newMessage)
+        //             f.controls["message"].reset();
+        //         });
+        // }
     }
 
-    chatIsLoaded() {
-        return this.dataLoaded
+    getChatIsLoaded() {
+        return this.chatroomLoaded && this.messagesLoaded;
     }
 }

@@ -6,6 +6,7 @@ const router = express.Router()
 // GET
 
 router.get("/", chatroomCtrl.getAllChatrooms)
+router.get("/delete/all", chatroomCtrl.deleteAllChatrooms)
 
 
 // POST

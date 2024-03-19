@@ -1,10 +1,10 @@
 export class Chatroom {
-    id!: number;
+    id!: string;
     user1!: string;
     user2!: string;
 
     constructor(
-        id: number,
+        id: string,
         user1: string,
         user2: string
     ) {

@@ -90,7 +90,6 @@ export class UserService {
 
     getConnectedUsers() {
         const url = `http://localhost:3000/api/user/connected_users`;
-        console.log("connected users")
         return this.http.get<any>(url);
     }
 }
