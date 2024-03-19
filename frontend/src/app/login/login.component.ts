@@ -46,7 +46,7 @@ export class LoginComponent {
                         this.userConnected = user;
                         localStorage.removeItem("user_id");
                         localStorage.setItem("user_id", user.id);
-                        this.router.navigateByUrl("/chat/65d7074dddb4b24c2dab31f3");
+                        this.router.navigateByUrl("/chat/");
                     }
                     },
                     error => {

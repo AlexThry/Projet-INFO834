@@ -19,8 +19,15 @@ const io = new server(expressServer, {
 io.on('connection', socket => {
     console.log(`User ${socket.id} connected`);
 
+    socket.on("join_room", chatroomId => {
+        socket.join(chatroomId)
+    })
+
+    socket.on('leave_room', () => {
+        socket.leaveAll()
+    })
+
     socket.on("message", data => {
-        console.log(data);
-        io.emit("message", `${socket.id.substring(0,5)}: ${data}`);
+        io.to(data.chatroomId).emit("message", data);
     });
 });

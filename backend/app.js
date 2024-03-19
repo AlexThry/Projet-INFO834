@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/user.route");
 const messageRoute = require("./routes/message.route");
+const chatroomRoute = require("./routes/chatroom.route");
 
 const app = express()
 
@@ -33,5 +34,6 @@ app.use((req, res, next) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoute);
+app.use("/api/chatroom", chatroomRoute);
 
 module.exports = app;

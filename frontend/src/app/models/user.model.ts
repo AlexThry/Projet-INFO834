@@ -3,6 +3,7 @@ export class User {
   username!: string;
   email!: string;
   password!: string;
+  connected!: boolean;
 
   constructor(
     id: string,
@@ -14,6 +15,7 @@ export class User {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.connected = false;
   }
 
 }
