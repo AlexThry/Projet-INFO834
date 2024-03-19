@@ -13,6 +13,7 @@ exports.addMessage = (req, res) => {
             console.log('Error in dropping index!', err);
         }
     });
+    console.log("prout")
 
     const sender_id = new mongoose.Types.ObjectId(req.body.sender_id);
     const receiver_id = new mongoose.Types.ObjectId(req.body.receiver_id);
