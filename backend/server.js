@@ -30,4 +30,12 @@ io.on('connection', socket => {
     socket.on("message", data => {
         io.to(data.chatroomId).emit("message", data);
     });
+
+    socket.on('user_login', userId => {
+        io.emit('user_login', userId);
+    })
+
+    socket.on('user_logout', userId => {
+        io.emit('user_logout', userId)
+    })
 });

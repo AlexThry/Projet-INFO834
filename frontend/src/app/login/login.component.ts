@@ -6,6 +6,8 @@ import {AuthService} from "../services/auth.service";
 import {HttpClient} from "@angular/common/http";
 import {AlertComponent} from "../alert/alert.component";
 import {CommonModule} from "@angular/common";
+import {io} from 'socket.io-client'
+
 
 @Component({
     selector: 'app-login',
@@ -20,6 +22,8 @@ import {CommonModule} from "@angular/common";
     styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+    socket = io("http://localhost:3000");
+
     submit: boolean = false;
     isLoading !: boolean;
     userConnected!: User;
@@ -43,6 +47,7 @@ export class LoginComponent {
                 .subscribe
                 (user => {
                     if (user) {
+                        this.socket.emit("user_login", user.id)
                         this.userConnected = user;
                         localStorage.removeItem("user_id");
                         localStorage.setItem("user_id", user.id);

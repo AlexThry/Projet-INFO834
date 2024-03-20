@@ -12,6 +12,7 @@ import {ChatroomService} from "../services/chatroom.service";
 import {Chatroom} from "../models/chatroom.model";
 import {subscribe} from "node:diagnostics_channel";
 import {UserPageComponent} from "../user-page/user-page.component";
+import {io} from "socket.io-client";
 
 @Component({
     selector: "app-conversations",
@@ -21,6 +22,7 @@ import {UserPageComponent} from "../user-page/user-page.component";
     styleUrl: "./conversations.component.scss",
 })
 export class ConversationsComponent {
+    socket = io("http://localhost:3000")
 
     userChatrooms: Chatroom[] = [];
     userChatroomsLoaded: boolean = false;
@@ -56,6 +58,14 @@ export class ConversationsComponent {
     ngOnInit() {
         this.loadUser();
         this.loadUserChatrooms()
+
+        this.socket.on("user_login", userId => {
+            this.userService.getUserById(userId).subscribe(user => this.connectedUsers.unshift(user));
+        })
+
+        this.socket.on("user_logout", userId => {
+            this.connectedUsers = this.connectedUsers.filter(user => user.id !== userId);
+        })
     }
 
     addCorrespondant(user: User) {
@@ -107,6 +117,7 @@ export class ConversationsComponent {
 
     logout() {
         this.userService.logout()
+        this.socket.emit("user_logout", localStorage.getItem("user_id"))
         this.router.navigateByUrl("").then(() => {
             localStorage.removeItem("user_id")
         })

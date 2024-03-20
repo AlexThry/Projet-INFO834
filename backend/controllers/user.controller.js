@@ -111,6 +111,8 @@ exports.login = (req, res, next) => {
                         return res.status(401).json({type: "password", message: "Error during connection"});
                     }
 
+
+
                     res.status(200).json( user );
                     initializeRedisClient().then(() => {
                         addUserToConnectedUsers(user._id);
