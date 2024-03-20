@@ -8,12 +8,12 @@ exports.getMessages = (req, res) => {
 }
 
 exports.addMessage = (req, res) => {
-    Message.collection.dropIndex('content_1', function(err, result) {
-        if (err) {
-            console.log('Error in dropping index!', err);
-        }
-    });
-    console.log("prout")
+    // Message.collection.dropIndex('content', function(err, result) {
+    //     if (err) {
+    //         console.log('Error in dropping index!', err);
+    //     }
+    // });
+    // console.log("prout")
 
     const sender_id = new mongoose.Types.ObjectId(req.body.sender_id);
     const receiver_id = new mongoose.Types.ObjectId(req.body.receiver_id);

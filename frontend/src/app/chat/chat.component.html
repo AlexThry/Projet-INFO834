@@ -1,9 +1,9 @@
 @defer (when getChatIsLoaded()) {
-    <div id="scroll" class="h-screen flex flex-col w-full relative justify-between">
+    <div id="scroll" class="h-screen flex flex-col w-full relative">
         <div class="sticky top-0 bg-white navbar justify-center h-20 z-10 shadow">
             <a class="font-bold text-xl">{{ correspondant.username }}</a>
         </div>
-        <div class="mx-5 flex flex-col overflow-y-scroll pt-2">
+        <div class="mx-5 flex flex-col overflow-y-scroll pt-2 mb-16">
             @for (message of messages; track message) {
                 @if (message.sender_id == loggedUserId) {
                     <div class="group chat chat-end flex flex-col">
@@ -19,7 +19,7 @@
                 }
             }
         </div>
-        <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class=" flex bottom-2 align-middle w-full mb-2">
+        <form #f="ngForm" (ngSubmit)="onSubmitMessage(f)" class="absolute flex bottom-2 align-middle w-full mb-2">
             <input ngModel type="text" name="message" id="message" class="mx-2 input w-full input-bordered" required>
             <button type="submit" class="btn mr-2 bg-fuchsia-600 text-white hover:bg-fuchsia-900">envoyer</button>
         </form>
@@ -29,5 +29,6 @@
     <div class="flex align-middle justify-center h-screen">
         <span class="loading loading-dots loading-lg"></span>
     </div>
+
 }
 
