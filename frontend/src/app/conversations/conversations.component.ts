@@ -11,11 +11,12 @@ import {AlertComponent} from "../alert/alert.component";
 import {ChatroomService} from "../services/chatroom.service";
 import {Chatroom} from "../models/chatroom.model";
 import {subscribe} from "node:diagnostics_channel";
+import {UserPageComponent} from "../user-page/user-page.component";
 
 @Component({
     selector: "app-conversations",
     standalone: true,
-    imports: [RouterLink, NgStyle, NgClass, AlertComponent],
+    imports: [RouterLink, NgStyle, NgClass, AlertComponent, UserPageComponent],
     templateUrl: "./conversations.component.html",
     styleUrl: "./conversations.component.scss",
 })

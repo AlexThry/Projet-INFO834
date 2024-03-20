@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {UserService} from "../services/user.service";
-import {User} from "stream-chat";
 import {AuthService} from "../services/auth.service";
+import {User} from "../models/user.model";
 
 @Component({
   selector: 'app-user-page',
@@ -27,7 +27,6 @@ export class UserPageComponent {
             this.firstUsername = this.userConnected.username;
             // @ts-ignore
             this.firstEmail = this.userConnected.email;
-
         });
     }
 
@@ -38,17 +37,18 @@ export class UserPageComponent {
         //modification username
         if(lf.value.username != this.firstUsername){
             this.userService.updateUsername(this.userConnected.id,lf.value.username).subscribe()
-
+            console.log("test")
         }
+
         //modification email
         if(lf.value.email != this.firstEmail){
             this.userService.updateEmail(this.userConnected.id,lf.value.email).subscribe()
-
         }
+
         //modification password
         if(lf.value.password != ""){
             this.userService.updatePassword(this.userConnected.id,lf.value.password).subscribe()
+        }
 
-        }
-        }
+    }
 }

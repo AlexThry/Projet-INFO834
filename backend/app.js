@@ -1,6 +1,6 @@
 const express = require("express");
 const redis = require('redis');
-
+var cors = require('cors');
 const client = redis.createClient();
 
 client.on('error', err => console.log('Redis Client Error', err));
@@ -12,6 +12,13 @@ const messageRoute = require("./routes/message.route");
 const chatroomRoute = require("./routes/chatroom.route");
 
 const app = express()
+
+app.use(
+    cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+    })
+)
 
 const databasePassword = "bet6M2GW8tNMLC9k"
 
