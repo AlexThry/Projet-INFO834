@@ -92,4 +92,17 @@ export class UserService {
         const url = `http://localhost:3000/api/user/connected_users`;
         return this.http.get<any>(url);
     }
+
+    updateUsername(id:string, newUsername:string){
+        const url = `http://localhost:3000/api/user/updateUsername/${id}`;
+        return this.http.post<any>(url, { newUsername })
+    }
+    updateEmail(id:string, newEmail:string){
+        const url = `http://localhost:3000/api/user/updateEmail/${id}`;
+        return this.http.post<any>(url, { newEmail })
+    }
+    updatePassword(id:string, newPassword:string){
+        const url = `http://localhost:3000/api/user/updatePassword/${id}`;
+        return this.http.post<any>(url, { newPassword })
+    }
 }

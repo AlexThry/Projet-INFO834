@@ -62,14 +62,6 @@ export class LoginComponent {
         return this.errorLogin !== undefined;
     }
 
-    errorIsEmail() {
-        return this.errorLogin.type === 'email';
-    }
-
-    errorIsPassword() {
-        return this.errorLogin.type === 'password';
-    }
-
     protected readonly Error = Error;
 }
 

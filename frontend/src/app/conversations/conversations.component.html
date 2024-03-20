@@ -4,7 +4,15 @@
     <div class="h-full w-full">
         <div class="navbar justify-center h-20 bg-base-100">
             <a (click)="logout()" class="btn">Logout</a>
-            <a class="rounded-box ml-4 text-xl">Bienvenue {{loggedUser.username}}</a>
+            <a onclick="my_modal_1.showModal()" class="rounded-box ml-4 text-xl hover:text-fuchsia-900 cursor-context-menu">Bienvenue {{loggedUser.username}}</a>
+            <dialog id="my_modal_1" class="modal">
+                <div class="modal-box">
+<!--                    <app-user-page></app-user-page>-->
+                </div>
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
         </div>
         <div class="divider">Correspondants</div>
         <ul>
@@ -97,4 +105,3 @@
         </li>
     </ul>
 }
-

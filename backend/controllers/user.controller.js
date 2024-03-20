@@ -36,6 +36,57 @@ exports.getConnectedUsers = (req, res) => {
     })
 }
 
+exports.updateUsername = (req,res) => {
+    const user_id = new mongoose.Types.ObjectId(req.params.user_id);
+    const newUsername = new mongoose.Types.ObjectId(req.body.username);
+
+    User.findOneAndUpdate({_id: user_id},{ username: newUsername })
+        .then(updatedUser => {
+            if (!updatedUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.status(200).json({ message: "Username updated", user: updatedUser });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ error: "Server error" });
+        });
+}
+
+exports.updateEmail= (req,res) => {
+    const user_id = new mongoose.Types.ObjectId(req.params.user_id);
+    const newEmail = new mongoose.Types.ObjectId(req.body.email);
+
+    User.findOneAndUpdate({_id: user_id},{ username: newEmail })
+        .then(updatedUser => {
+            if (!updatedUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.status(200).json({ message: "Email updated", user: updatedUser });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ error: "Server error" });
+        });
+}
+
+exports.updatePassword = (req,res) => {
+    const user_id = new mongoose.Types.ObjectId(req.params.user_id);
+    const newPassword = new mongoose.Types.ObjectId(req.body.password);
+
+    User.findOneAndUpdate({_id: user_id},{ username: newPassword })
+        .then(updatedUser => {
+            if (!updatedUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.status(200).json({ message: "Password updated", user: updatedUser });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ error: "Server error" });
+        });
+}
+
 exports.login = (req, res, next) => {
 
     User.findOne({email: req.body.email})
@@ -82,6 +133,8 @@ exports.addUser = (req, res) => {
             }
         })
 }
+
+
 
 
 
