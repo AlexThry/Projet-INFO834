@@ -3,6 +3,7 @@ import { forkJoin, map, Observable, switchMap } from "rxjs";
 import { Message } from "../models/message.model";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "./user.service";
+import {log} from "node:util";
 
 @Injectable({
     providedIn: "root",
@@ -25,7 +26,7 @@ export class MessageService {
             "receiver_id": receiverId,
             "chatroom_id": chatroomId,
             "content": content,
-        });
+        }).subscribe(message => console.log(message))
     }
 
     getMessagesFromChatroom(chatroomId: string) {

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
@@ -30,6 +30,9 @@ export class ChatComponent {
 
     messages : Message[] = [];
     messagesLoaded : boolean = false;
+
+    @ViewChild('scroll') private myScrollContainer!: ElementRef;
+
 
 
     loggedUserId !: string;
@@ -67,7 +70,14 @@ export class ChatComponent {
                     new Date()
                 )
             )
+            this.scrollToBottom();
         })
+    }
+
+    scrollToBottom(): void {
+        try {
+            this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+        } catch(err) { }
     }
 
     loadChatroom() {
@@ -98,6 +108,7 @@ export class ChatComponent {
                 this.messageService.getMessagesFromChatroom(this.chatroom.id).subscribe(messages => {
                     this.messages = messages.reverse();
                     this.messagesLoaded = true;
+                    this.scrollToBottom();
                 })
             })
         }
@@ -114,24 +125,17 @@ export class ChatComponent {
                 receiverId: this.correspondantId,
                 chatroomId: this.chatroom.id
             })
+            this.messageService
+                .createMessage(
+                    this.loggedUserId,
+                    this.correspondantId,
+                    this.chatroom.id,
+                    f.value.message,
+                )
             f.controls["message"].reset();
+            this.scrollToBottom();
         }
 
-
-        // if (f.value.message != "" && f.value.message != undefined) {
-        //     this.messageService
-        //         .createMessage(
-        //             this.loggedUserId,
-        //             this.correspondantId,
-        //             this.chatroom.id,
-        //             f.value.message,
-        //         )
-        //         .subscribe(() => {
-        //             const newMessage = new Message('0', f.value.message, this.loggedUserId, this.correspondantId, this.chatroom.id, new Date())
-        //             this.messages.push(newMessage)
-        //             f.controls["message"].reset();
-        //         });
-        // }
     }
 
     getChatIsLoaded() {
