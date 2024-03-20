@@ -11,7 +11,7 @@ router.get("/delete/all", chatroomCtrl.deleteAllChatrooms)
 
 // POST
 
-router.post("/new", chatroomCtrl.newChatroom)
+router.post("/new", chatroomCtrl.getChatroom)
 router.post("/userid", chatroomCtrl.getAllUserChatrooms)
 router.post("/conv", chatroomCtrl.getUsersChatroom)
 

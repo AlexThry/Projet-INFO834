@@ -64,9 +64,12 @@ export class ConversationsComponent {
                 return
             }
         }
-        this.correspondants.push(user);
+        this.correspondants.unshift(user);
     }
 
+    setFirstCorrespondant(correspondant: User) {
+        this.correspondants.sort((a, b) => a.id === correspondant.id ? -1 : b.id === correspondant.id ? 1 : 0);
+    }
 
 
     loadUserChatrooms() {

@@ -7,7 +7,7 @@ exports.getAllChatrooms = (req, res) => {
         .catch(error => res.status(401).json({error}));
 }
 
-exports.newChatroom = (req, res) => {
+exports.getChatroom = (req, res) => {
     const user1 = new mongoose.Types.ObjectId(req.body.user1);
     const user2 = new mongoose.Types.ObjectId(req.body.user2);
 
@@ -19,11 +19,18 @@ exports.newChatroom = (req, res) => {
     })
         .then(existingChatroom => {
             if (existingChatroom) {
-                res.status(200).json(existingChatroom);
+                ChatRoom.findOneAndUpdate(
+                    { _id: existingChatroom._id },
+                    { timestamp: new Date() },
+                    { new: true }  // retourne le document mis à jour
+                )
+                    .then(updatedChatroom => res.status(200).json(updatedChatroom))
+                    .catch(error => res.status(500).json({error}));
             } else {
                 const chatroom = new ChatRoom({
                     user1: user1,
-                    user2: user2
+                    user2: user2,
+                    timestamp: new Date()
                 });
 
                 chatroom.save()
@@ -44,6 +51,7 @@ exports.getUsersChatroom = (req, res) => {
             {user1: user2, user2: user1}
         ]
     })
+        .sort({timestamp: -1})
         .then(chatroom => res.status(200).json(chatroom))
         .catch(error => res.status(401).json({error}));
 }

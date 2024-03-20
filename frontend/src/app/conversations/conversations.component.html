@@ -18,7 +18,7 @@
         <ul>
             @for (correspondant of correspondants; track correspondant) {
                 <li>
-                    <a routerLink="/chat/{{correspondant.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
+                    <a (click)="setFirstCorrespondant(correspondant)" routerLink="/chat/{{correspondant.id}}" class="h-20 mx-5 my-2 flex justify-start btn rounded-box">
                         <div class="avatar">
                             <div class="w-12 h-12 rounded-xl">
                                 <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
