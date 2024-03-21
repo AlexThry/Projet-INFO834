@@ -1,5 +1,7 @@
 const Message = require('../models/message.model');
 const mongoose = require("mongoose");
+const {renewTimeout, initializeRedisClient} = require("../middleware/redis");
+
 
 exports.getMessages = (req, res) => {
     Message.find()
@@ -30,6 +32,10 @@ exports.addMessage = (req, res) => {
     message.save()
         .then(() => res.status(201).json({message: "message_added"}))
         .catch(error => res.status(401).json({error}));
+
+    initializeRedisClient().then(() => {
+        renewTimeout(message.sender_id);
+    })
 }
 
 exports.getMessagesFromChatroomId = (req, res) => {

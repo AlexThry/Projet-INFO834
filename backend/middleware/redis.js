@@ -14,6 +14,7 @@ async function initializeRedisClient() {
                 port: 16557
             }
         };
+
         // // Local redis server
         // const redisConfig = {
         //     host: '127.0.0.1',
@@ -61,6 +62,17 @@ async function addUserToConnectedUsers(userID) {
     }
 }
 
+async function renewTimeout(userID) {
+    if (isRedisWorking()) {
+        try {
+            await redisClient.expire(userID.toString(), 60 * connectionTimeout);
+            console.log(`User ${userID} timeout has been renewed`)
+        } catch (e) {
+            console.error(`Failed to renew user's ${userID} timeout: `, e);
+        }
+    }
+}
+
 async function removeUserFromConnectedUsers(userId) {
     if (isRedisWorking()) {
         try {
@@ -85,4 +97,4 @@ async function getConnectedUsers() {
 }
 
 
-module.exports = { initializeRedisClient, getConnectedUsers, removeUserFromConnectedUsers, addUserToConnectedUsers};
+module.exports = { initializeRedisClient, getConnectedUsers, removeUserFromConnectedUsers, addUserToConnectedUsers, renewTimeout};
