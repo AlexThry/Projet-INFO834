@@ -144,8 +144,3 @@ exports.addUser = (req, res) => {
             }
         })
 }
-
-
-
-
-
