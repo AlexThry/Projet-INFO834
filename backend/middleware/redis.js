@@ -1,9 +1,9 @@
 const { createClient } = require("redis");
 const hash = require("object-hash");
 
-const redisConnectedUsersKey = "connected_users";
+// const redisConnectedUsersKey = "connected_users";
 let redisClient = undefined;
-
+let connectionTimeout = 10;
 
 async function initializeRedisClient() {
     if (redisClient == undefined) {
@@ -14,6 +14,12 @@ async function initializeRedisClient() {
                 port: 16557
             }
         };
+        // // Local redis server
+        // const redisConfig = {
+        //     host: '127.0.0.1',
+        //     port: 6379,
+        // };
+
 
         redisClient = createClient(redisConfig).on("error", (e) => {
             console.error(`Failed to create the Redis client with error:`);
@@ -46,7 +52,8 @@ function isRedisWorking() {
 async function addUserToConnectedUsers(userID) {
     if (isRedisWorking()) {
         try {
-            await redisClient.sAdd(redisConnectedUsersKey, userID.toString());
+            await redisClient.set(userID.toString(), userID.toString());
+            await redisClient.expire(userID.toString(), 60 * connectionTimeout);
             console.log(`User ${userID} added to connected users`)
         } catch (e) {
             console.error(`Failed to add user ${userID} to connected users`, e);
@@ -57,7 +64,7 @@ async function addUserToConnectedUsers(userID) {
 async function removeUserFromConnectedUsers(userId) {
     if (isRedisWorking()) {
         try {
-            await redisClient.sRem(redisConnectedUsersKey, userId.toString());
+            await redisClient.del(userId.toString());
             console.log(`User ${userId} removed from connected users`)
         } catch (e) {
             console.error(`Failed to remove user ${userId} from connected users`, e);
@@ -69,7 +76,7 @@ async function getConnectedUsers() {
     let connectedUsers = [];
     if (isRedisWorking()) {
         try {
-            connectedUsers = await redisClient.sMembers(redisConnectedUsersKey);
+            connectedUsers = await redisClient.keys('*');
         } catch (e) {
             console.error('Failed to get connected users', e);
         }
