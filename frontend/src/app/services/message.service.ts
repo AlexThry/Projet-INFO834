@@ -9,6 +9,8 @@ import {log} from "node:util";
     providedIn: "root",
 })
 export class MessageService {
+    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
+
     constructor(
         private http: HttpClient,
         private userService: UserService,
@@ -20,7 +22,7 @@ export class MessageService {
             chatroomId: string,
             content: string
         ) {
-        const url = `http://localhost:3000/api/message/add`;
+        const url = `${this.baseUrl}/message/add`;
         return this.http.post(url, {
             "sender_id": senderId,
             "receiver_id": receiverId,
@@ -30,7 +32,7 @@ export class MessageService {
     }
 
     getMessagesFromChatroom(chatroomId: string) {
-        const url = `http://localhost:3000/api/message/chatroom`;
+        const url = `${this.baseUrl}/message/chatroom`;
 
         return this.http.post<any>(url, {
             chatroom_id: chatroomId

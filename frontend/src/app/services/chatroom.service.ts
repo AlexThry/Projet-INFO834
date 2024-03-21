@@ -8,13 +8,14 @@ import {User} from "../models/user.model";
   providedIn: 'root'
 })
 export class ChatroomService {
+    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
 
     constructor(
       private http: HttpClient
     ) { }
 
     createChatroom(user1: string, user2: string) {
-      const url = "http://localhost:3000/api/chatroom/new";
+      const url = `${this.baseUrl}/chatroom/new`;
 
       return this.http.post<any>(url, {
           user1: user1,
@@ -28,7 +29,7 @@ export class ChatroomService {
       )
     }
     getAllUserChatrooms(user_id: string) {
-        const url = `http://localhost:3000/api/chatroom/userid`;
+        const url = `${this.baseUrl}/chatroom/userid`;
 
         return this.http.post<any>(url, {user_id: user_id})
             .pipe(
@@ -48,7 +49,7 @@ export class ChatroomService {
     }
 
     getChatroomByUsersIds(user1: string, user2: string) {
-        const url = `http://localhost:3000/api/chatroom/conv`;
+        const url = `${this.baseUrl}/chatroom/conv`;
 
         return this.http.post<any>(url, {
             user1: user1,

@@ -9,11 +9,13 @@ import {AuthService} from "./auth.service";
     providedIn: "root",
 })
 export class UserService {
+    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
+
     constructor(
         private http: HttpClient) {}
 
     getUserById(id: string) {
-        let url = `http://localhost:3000/api/user/id=${id}`;
+        let url = `${this.baseUrl}/user/id=${id}`;
 
         return this.http
             .get<any>(url)
@@ -31,13 +33,13 @@ export class UserService {
     }
 
     signup(email: string, password: string, username: string) {
-        const url = `http://localhost:3000/api/user/add`
+        const url = `${this.baseUrl}/user/add`
 
         return this.http.post<any>(url, { email, password, username })
     }
 
     login(email: string, password: string) {
-        const url = `http://localhost:3000/api/user/login`
+        const url = `${this.baseUrl}/user/login`
 
         return this.http.post<any>(url, { email, password })
             // .pipe(
@@ -58,7 +60,7 @@ export class UserService {
     }
 
     logout() {
-        const url = `http://localhost:3000/api/user/logout/id=${localStorage.getItem('user_id')}`
+        const url = `${this.baseUrl}/user/logout/id=${localStorage.getItem('user_id')}`
         return this.http.get<any>(url).subscribe(
             data => {
                 console.log(data)
@@ -69,7 +71,7 @@ export class UserService {
     }
 
     getAllUsers() {
-        const url = `http://localhost:3000/api/user`;
+        const url = `${this.baseUrl}/user`;
 
         return this.http.get<any>(url)
             .pipe(
@@ -89,20 +91,20 @@ export class UserService {
     }
 
     getConnectedUsers() {
-        const url = `http://localhost:3000/api/user/connected_users`;
+        const url = `${this.baseUrl}/connected_users`;
         return this.http.get<any>(url);
     }
 
     updateUsername(id:string, newUsername:string){
-        const url = `http://localhost:3000/api/user/updateUsername/${id}`
+        const url = `${this.baseUrl}/user/updateUsername/${id}`
         return this.http.post<any>(url, {"username": newUsername})
     }
     updateEmail(id:string, newEmail:string){
-        const url = `http://localhost:3000/api/user/updateEmail/${id}`
+        const url = `${this.baseUrl}/user/updateEmail/${id}`
         return this.http.post<any>(url, {"email": newEmail})
     }
     updatePassword(id:string, newPassword:string){
-        const url = `http://localhost:3000/api/user/updatePassword/${id}`
+        const url = `${this.baseUrl}/user/updatePassword/${id}`
         return this.http.post<any>(url, {"password": newPassword})
     }
 }
