@@ -9,7 +9,7 @@ import {AuthService} from "./auth.service";
     providedIn: "root",
 })
 export class UserService {
-    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
+    private baseUrl = "http://localhost:3000/api";
 
     constructor(
         private http: HttpClient) {}

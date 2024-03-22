@@ -9,7 +9,7 @@ import {log} from "node:util";
     providedIn: "root",
 })
 export class MessageService {
-    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
+    private baseUrl = "http://localhost:3000/api";
 
     constructor(
         private http: HttpClient,

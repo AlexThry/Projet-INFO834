@@ -8,7 +8,7 @@ import {User} from "../models/user.model";
   providedIn: 'root'
 })
 export class ChatroomService {
-    private baseUrl = "https://web-chat-app-server.azurewebsites.net/api";
+    private baseUrl = "http://localhost:3000/api";
 
     constructor(
       private http: HttpClient
