@@ -111,11 +111,11 @@ exports.login = (req, res, next) => {
                         return res.status(401).json({type: "password", message: "Error during connection"});
                     }
 
-
-
                     res.status(200).json( user );
                     initializeRedisClient().then(() => {
-                        addUserToConnectedUsers(user._id);
+                        addUserToConnectedUsers(user._id).then(
+                            () => console.log(`user ${user._id} connected`)
+                        )
                     })
                 })
                 .catch(error => res.status(500).json({ prout: "prout" }));

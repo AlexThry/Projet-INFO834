@@ -91,7 +91,7 @@ export class UserService {
     }
 
     getConnectedUsers() {
-        const url = `${this.baseUrl}/connected_users`;
+        const url = `${this.baseUrl}/user/connected_users`;
         return this.http.get<any>(url);
     }
 

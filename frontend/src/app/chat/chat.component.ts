@@ -54,7 +54,6 @@ export class ChatComponent {
             filter(event => event instanceof NavigationEnd)
         ).subscribe(() => {
             this.loadChatroom();
-            this.loadMessages();
         });
     }
 

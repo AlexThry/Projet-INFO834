@@ -17,7 +17,7 @@ const io = new server(expressServer, {
 });
 
 io.on('connection', socket => {
-    console.log(`User ${socket.id} connected`);
+    console.log(`Socket ${socket.id} connected`);
 
     socket.on("join_room", chatroomId => {
         socket.join(chatroomId)

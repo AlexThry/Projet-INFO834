@@ -47,7 +47,8 @@ export class LoginComponent {
                 .subscribe
                 (user => {
                     if (user) {
-                        this.socket.emit("user_login", user.id)
+                        this.socket.emit("user_login", user.id);
+                        this.socket.disconnect();
                         this.userConnected = user;
                         localStorage.removeItem("user_id");
                         localStorage.setItem("user_id", user.id);
